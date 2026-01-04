@@ -90,12 +90,9 @@ fn main() {
     p2();
 }
 
-fn p2() {}
-
-fn p1() {
+fn create_set() -> OrderedRangeVector {
     let f = File::open("./input.txt").expect("Unable to open file");
     let mut f = BufReader::new(f);
-    let mut result = 0;
 
     let mut input: String = String::new();
 
@@ -112,6 +109,41 @@ fn p1() {
 
             ordered_vector.add((start, end));
         });
+    return ordered_vector;
+}
+
+fn p2() {
+    let mut result = 0;
+    let ordered_vector = create_set();
+
+    for value in ordered_vector.iter() {
+        let string = value.to_string();
+
+        let mid = string.len() / 2;
+        let mut size = mid;
+
+        while size >= 1 {
+            if string.len() % size != 0 {
+                continue;
+            }
+            if string
+                .as_bytes()
+                .chunks(size)
+                .all(|x| *x == string.as_bytes()[..size])
+            {
+                result += value;
+                break;
+            }
+            size -= 1
+        }
+    }
+
+    println!("El resultado es {result}");
+}
+
+fn p1() {
+    let mut result = 0;
+    let ordered_vector = create_set();
 
     for value in ordered_vector.iter() {
         let string = value.to_string();
@@ -123,7 +155,6 @@ fn p1() {
         let mid = string.len() / 2;
 
         if string[..mid] == string[mid..] {
-            dbg!(value);
             result += value
         }
     }
